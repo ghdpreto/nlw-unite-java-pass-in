@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.Normalizer;
+
 @Entity
 @Table(name = "events")
 @Getter
@@ -30,4 +32,16 @@ public class Event {
 
     @Column(nullable = false, name="maximum_attendees")
     private Integer maximumAttendees;
+
+    public void createSlug(String text) {
+        // normalizer
+        // São Paulo -> Sa~o Paulo
+        String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
+
+        // remove os acentos
+        this.slug =  normalized.replaceAll("[\\p{InCOMBINING_DIACRITICAL_MARKS}]", "")
+                .replaceAll("[^\\w\\s]", "")
+                .replaceAll("\\s+", "-")
+                .toLowerCase();
+    }
 }

@@ -2,12 +2,16 @@ package br.com.ghdpreto.nlwunitejavapassin.services;
 
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
 import br.com.ghdpreto.nlwunitejavapassin.domain.event.Event;
+import br.com.ghdpreto.nlwunitejavapassin.domain.event.exceptions.EventNotFoundException;
+import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventDetailDTO;
+import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventRequestDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventResponseDTO;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.AttendeeRepository;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.util.List;
 
 
@@ -19,15 +23,52 @@ public class EventService {
     private final EventRepository eventRepository;
     private final AttendeeRepository attendeeRepository;
 
-    public EventResponseDTO getEventDetail(String eventId) {
+    public EventDetailDTO getEventDetail(String eventId) {
 
         Event event = this.eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found with ID:" + eventId));
 
         List<Attendee> attendeeList = this.attendeeRepository.findByEventId(eventId);
 
 
-        return new EventResponseDTO(event, attendeeList.size());
+        return new EventDetailDTO(
+                event.getId(),
+                event.getTitle(),
+                event.getDetails(),
+                event.getSlug(),
+                event.getMaximumAttendees(),
+                attendeeList.size());
     }
 
+
+
+    public Event createEvent(EventRequestDTO event) {
+        Event newEvent = new Event();
+
+        newEvent.setTitle(event.title());
+        newEvent.setDetails(event.details());
+        newEvent.setMaximumAttendees(event.maximumAttendees());
+        newEvent.createSlug(event.title());
+
+        System.out.println("event = " + newEvent.getSlug());
+
+
+        this.eventRepository.save(newEvent);
+
+        return newEvent;
+    }
+
+
+
+    private String createSlug(String text) {
+        // normalizer
+        // São Paulo -> Sa~o Paulo
+        String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
+
+        // remove os acentos
+        return normalized.replaceAll("[\\p{InCOMBINING_DIACRITICAL_MARKS}]", "")
+                .replaceAll("[^\\w\\s]", "")
+                .replaceAll("\\s+", "-")
+                .toLowerCase();
+    }
 
 }
