@@ -2,12 +2,16 @@ package br.com.ghdpreto.nlwunitejavapassin.services;
 
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendAlreadyExistException;
+import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendeeNotFoundExceptions;
 import br.com.ghdpreto.nlwunitejavapassin.domain.checkin.CheckIn;
+import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeBadgeResponseDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeDetailsDTO;
+import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeBadgeDTO;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.AttendeeRepository;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.CheckInRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +23,6 @@ public class AttendeeService {
 
     private final AttendeeRepository attendeeRepository;
     private final CheckInRepository checkInRepository;
-
 
     public List<Attendee> getAllAttendeesFromEvent(String eventId) {
         return this.attendeeRepository.findByEventId(eventId);
@@ -53,6 +56,21 @@ public class AttendeeService {
 
         if(isAttendeeRegistred.isPresent()) throw new AttendAlreadyExistException("Attendee is already registered");
 
+    }
 
+    public AttendeeBadgeDTO getAttendeeBadge(String attendeeId, UriComponentsBuilder uriComponentsBuilder) {
+        Attendee attendee = this.attendeeRepository.findById(attendeeId)
+                .orElseThrow(() -> new AttendeeNotFoundExceptions("Attendee not found with ID: " + attendeeId));
+
+        var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/check-in")
+                .buildAndExpand(attendee.getId())
+                .toUri()
+                .toString();
+
+        return new AttendeeBadgeDTO(
+                attendee.getName(),
+                attendee.getEmail(),
+                uri,
+                attendee.getEvent().getId());
     }
 }
