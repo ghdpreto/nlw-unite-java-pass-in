@@ -1,15 +1,21 @@
 package br.com.ghdpreto.nlwunitejavapassin.controllers;
 
+import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
 import br.com.ghdpreto.nlwunitejavapassin.domain.event.Event;
+import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeDetailsDTO;
+import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeesListResponseDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventDetailDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventIdDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventRequestDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventResponseDTO;
+import br.com.ghdpreto.nlwunitejavapassin.services.AttendeeService;
 import br.com.ghdpreto.nlwunitejavapassin.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/events")
@@ -17,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class EventController {
 
     private final EventService eventService;
+    private final AttendeeService attendeeService;
 
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable String id) {
@@ -35,5 +42,13 @@ public class EventController {
         var uri = uriComponentsBuilder.path("/events/{id}").buildAndExpand(newEvent.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new EventIdDTO(newEvent.getId()));
+    }
+
+    @GetMapping("/attendees/{id}")
+    public ResponseEntity<AttendeesListResponseDTO> getEventAttendees(@PathVariable String id) {
+        List<AttendeeDetailsDTO> attendeesFromEvent = this.attendeeService.getEventsAttende(id);
+        EventDetailDTO event = this.eventService.getEventDetail(id);
+
+        return ResponseEntity.ok(new AttendeesListResponseDTO(attendeesFromEvent));
     }
 }
