@@ -17,6 +17,7 @@ public class AttendeeController {
     private final AttendeeService attendeeService;
     private final CheckInService checkInService;
 
+    // buscar cracha
     @GetMapping("/{attendeeId}/badge")
     public ResponseEntity<AttendeeBadgeResponseDTO> getAttendeeBadge(@PathVariable String attendeeId, UriComponentsBuilder uriComponentsBuilder) {
 
@@ -25,6 +26,7 @@ public class AttendeeController {
         return ResponseEntity.ok(new AttendeeBadgeResponseDTO(attendeeBadge));
     }
 
+    // realizar checkIn
     @PostMapping("/{attendeeId}/check-in")
     public ResponseEntity registerCheckIn(@PathVariable String attendeeId, UriComponentsBuilder uriComponentsBuilder) {
         this.attendeeService.checkInAttendee(attendeeId);

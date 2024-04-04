@@ -27,14 +27,7 @@ public class EventController {
     private final EventService eventService;
     private final AttendeeService attendeeService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EventResponseDTO> getEvent(@PathVariable String id) {
-
-        EventDetailDTO event = this.eventService.getEventDetail(id);
-
-        return ResponseEntity.ok(new EventResponseDTO(event));
-    }
-
+    // criar um evento
     @PostMapping("")
     public ResponseEntity<EventIdDTO> creatEvent(@RequestBody EventRequestDTO event, UriComponentsBuilder uriComponentsBuilder) {
 
@@ -46,6 +39,18 @@ public class EventController {
         return ResponseEntity.created(uri).body(new EventIdDTO(newEvent.getId()));
     }
 
+
+    // dados do evento
+    @GetMapping("/{id}")
+    public ResponseEntity<EventResponseDTO> getEvent(@PathVariable String id) {
+
+        EventDetailDTO event = this.eventService.getEventDetail(id);
+
+        return ResponseEntity.ok(new EventResponseDTO(event));
+    }
+
+
+    // buscar participantes do evento
     @GetMapping("/attendees/{id}")
     public ResponseEntity<AttendeesListResponseDTO> getEventAttendees(@PathVariable String id) {
         List<AttendeeDetailsDTO> attendeesFromEvent = this.attendeeService.getEventsAttende(id);

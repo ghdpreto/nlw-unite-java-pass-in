@@ -1,14 +1,12 @@
 package br.com.ghdpreto.nlwunitejavapassin.services;
 
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
-import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendAlreadyExistException;
-import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendeeNotFoundExceptions;
+import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendeeAlreadyExistException;
+import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendeeNotFoundException;
 import br.com.ghdpreto.nlwunitejavapassin.domain.checkin.CheckIn;
-import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeBadgeResponseDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeDetailsDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeBadgeDTO;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.AttendeeRepository;
-import br.com.ghdpreto.nlwunitejavapassin.repositories.CheckInRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -54,7 +52,7 @@ public class AttendeeService {
     public void verifyAttendeeSubscription(String email, String eventId) {
         Optional<Attendee> isAttendeeRegistred = this.attendeeRepository.findByEventIdAndEmail(eventId, email);
 
-        if(isAttendeeRegistred.isPresent()) throw new AttendAlreadyExistException("Attendee is already registered");
+        if(isAttendeeRegistred.isPresent()) throw new AttendeeAlreadyExistException("Attendee is already registered");
 
     }
 
@@ -80,6 +78,6 @@ public class AttendeeService {
 
     private Attendee getAttendee(String attendeeId) {
         return this.attendeeRepository.findById(attendeeId)
-                .orElseThrow(() -> new AttendeeNotFoundExceptions("Attendee not found with ID: " + attendeeId));
+                .orElseThrow(() -> new AttendeeNotFoundException("Attendee not found with ID: " + attendeeId));
     }
 }
