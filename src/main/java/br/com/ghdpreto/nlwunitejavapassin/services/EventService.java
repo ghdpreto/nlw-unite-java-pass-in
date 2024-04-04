@@ -2,7 +2,9 @@ package br.com.ghdpreto.nlwunitejavapassin.services;
 
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
 import br.com.ghdpreto.nlwunitejavapassin.domain.event.Event;
+import br.com.ghdpreto.nlwunitejavapassin.domain.event.exceptions.EventFullException;
 import br.com.ghdpreto.nlwunitejavapassin.domain.event.exceptions.EventNotFoundException;
+import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeRequestDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventDetailDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventRequestDTO;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.EventRepository;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -23,8 +26,7 @@ public class EventService {
 
     public EventDetailDTO getEventDetail(String eventId) {
 
-        Event event = this.eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException("Event not found with ID:" + eventId));
+        Event event = this.getEventById(eventId);
 
         List<Attendee> attendeeList = this.attendeeService.getAllAttendeesFromEvent(eventId);
 
@@ -37,7 +39,6 @@ public class EventService {
                 event.getMaximumAttendees(),
                 attendeeList.size());
     }
-
 
 
     public Event createEvent(EventRequestDTO event) {
@@ -57,17 +58,31 @@ public class EventService {
     }
 
 
+    public  Attendee registerAttendeeOnEvent(String eventId, AttendeeRequestDTO attendeeRequestDTO) {
 
-    private String createSlug(String text) {
-        // normalizer
-        // São Paulo -> Sa~o Paulo
-        String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
+        this.attendeeService.verifyAttendeeSubscription(attendeeRequestDTO.email(), eventId);
 
-        // remove os acentos
-        return normalized.replaceAll("[\\p{InCOMBINING_DIACRITICAL_MARKS}]", "")
-                .replaceAll("[^\\w\\s]", "")
-                .replaceAll("\\s+", "-")
-                .toLowerCase();
+        Event event = this.getEventById(eventId);
+
+        List<Attendee> attendeeList = this.attendeeService.getAllAttendeesFromEvent(eventId);
+
+        // valida se o event tem vaga disponivel
+        if(event.getMaximumAttendees()<= attendeeList.size())  throw new EventFullException("Event is full");
+
+        Attendee newAttendee = new Attendee();
+        newAttendee.setName(attendeeRequestDTO.name());
+        newAttendee.setEmail(attendeeRequestDTO.email());
+        newAttendee.setEvent(event);
+        newAttendee.setCreatedAt(LocalDateTime.now());
+
+        this.attendeeService.registerAttendee(newAttendee);
+
+        return newAttendee;
     }
 
+
+    private Event getEventById(String eventId) {
+        return this.eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found with ID:" + eventId));
+    }
 }

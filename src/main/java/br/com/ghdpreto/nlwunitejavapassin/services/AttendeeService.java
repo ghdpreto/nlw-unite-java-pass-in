@@ -1,6 +1,7 @@
 package br.com.ghdpreto.nlwunitejavapassin.services;
 
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
+import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.exceptions.AttendAlreadyExistException;
 import br.com.ghdpreto.nlwunitejavapassin.domain.checkin.CheckIn;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeDetailsDTO;
 import br.com.ghdpreto.nlwunitejavapassin.repositories.AttendeeRepository;
@@ -41,5 +42,17 @@ public class AttendeeService {
         }).toList();
 
         return attendeeDetailsList;
+    }
+
+    public Attendee registerAttendee(Attendee newAttendee) {
+        return this.attendeeRepository.save(newAttendee);
+    }
+
+    public void verifyAttendeeSubscription(String email, String eventId) {
+        Optional<Attendee> isAttendeeRegistred = this.attendeeRepository.findByEventIdAndEmail(eventId, email);
+
+        if(isAttendeeRegistred.isPresent()) throw new AttendAlreadyExistException("Attendee is already registered");
+
+
     }
 }
