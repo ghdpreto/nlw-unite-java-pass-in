@@ -54,8 +54,8 @@ public class EventController {
     // buscar participantes do evento
     @GetMapping("/attendees/{id}")
     public ResponseEntity<AttendeesListResponseDTO> getEventAttendees(@PathVariable String id) {
+        this.eventService.getEventDetail(id);
         List<AttendeeDetailsDTO> attendeesFromEvent = this.attendeeService.getEventsAttende(id);
-        EventDetailDTO event = this.eventService.getEventDetail(id);
 
         return ResponseEntity.ok(new AttendeesListResponseDTO(attendeesFromEvent));
     }
