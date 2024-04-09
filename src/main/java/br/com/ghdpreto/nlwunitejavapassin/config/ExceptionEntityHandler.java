@@ -7,20 +7,28 @@ import br.com.ghdpreto.nlwunitejavapassin.domain.checkin.exceptions.CheckInAlrea
 import br.com.ghdpreto.nlwunitejavapassin.domain.event.exceptions.EventFullException;
 import br.com.ghdpreto.nlwunitejavapassin.domain.event.exceptions.EventNotFoundException;
 import br.com.ghdpreto.nlwunitejavapassin.dto.general.ErrorResponseDTO;
-import org.hibernate.exception.spi.SQLExceptionConverter;
+import br.com.ghdpreto.nlwunitejavapassin.dto.general.ErrorValidationResponseDTO;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 // classe para captura de erros domain/controller
 @ControllerAdvice
 public class ExceptionEntityHandler {
 
+    private MessageSource messageSource;
+
+    public ExceptionEntityHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     // esse trata excecoe do tipo EventNotFoundException
     @ExceptionHandler(EventNotFoundException.class)
@@ -55,6 +63,21 @@ public class ExceptionEntityHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponseDTO> handleRuntimeExceptionException(RuntimeException exception) {
+        System.out.println(exception);
         return ResponseEntity.internalServerError().body(new ErrorResponseDTO("Internal server error"));
     }
+
+    //### VALIDACAO DE CAMPOS ###
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<ErrorValidationResponseDTO>> handleMethodArgumentNotValidExceptoion(MethodArgumentNotValidException exception) {
+        List<ErrorValidationResponseDTO> dto = new ArrayList<ErrorValidationResponseDTO>();
+
+        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
+            dto.add(new ErrorValidationResponseDTO(fieldError.getField(), fieldError.getDefaultMessage()));
+        }
+
+        return ResponseEntity.badRequest().body(dto);
+    }
+
+
 }

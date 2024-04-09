@@ -1,7 +1,6 @@
 package br.com.ghdpreto.nlwunitejavapassin.controllers;
 
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
-import br.com.ghdpreto.nlwunitejavapassin.domain.event.Event;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeDetailsDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeIdDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeRequestDTO;
@@ -12,6 +11,7 @@ import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventRequestDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventResponseDTO;
 import br.com.ghdpreto.nlwunitejavapassin.services.AttendeeService;
 import br.com.ghdpreto.nlwunitejavapassin.services.EventService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,8 @@ public class EventController {
 
     // criar um evento
     @PostMapping("")
-    public ResponseEntity<EventIdDTO> creatEvent(@RequestBody EventRequestDTO event, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<EventIdDTO> creatEvent(@Valid @RequestBody EventRequestDTO event,
+                                                 UriComponentsBuilder uriComponentsBuilder) {
 
         var newEvent = this.eventService.createEvent(event);
 
@@ -64,7 +65,9 @@ public class EventController {
     * */
     @PostMapping("/{eventId}/attendees")
     public ResponseEntity<AttendeeIdDTO> registerParticipant(
-            @PathVariable String eventId, @RequestBody AttendeeRequestDTO attendeeRequestDTO, UriComponentsBuilder uriComponentsBuilder) {
+            @PathVariable String eventId,
+            @Valid @RequestBody AttendeeRequestDTO attendeeRequestDTO,
+            UriComponentsBuilder uriComponentsBuilder) {
 
         Attendee newAttendeRegister = this.eventService.registerAttendeeOnEvent(eventId, attendeeRequestDTO);
 

@@ -29,7 +29,7 @@ SET FILES NIO TRUE
 SET FILES NIO SIZE 256
 SET FILES LOG TRUE
 SET FILES LOG SIZE 50
-SET FILES CHECK 2512
+SET FILES CHECK 3472
 SET DATABASE COLLATION "SQL_TEXT" PAD SPACE
 CREATE USER SA PASSWORD DIGEST 'd41d8cd98f00b204e9800998ecf8427e'
 ALTER USER SA SET LOCAL TRUE
@@ -59,11 +59,15 @@ INSERT INTO "flyway_schema_history" VALUES(2,'2','create-table-attendees','SQL',
 INSERT INTO "flyway_schema_history" VALUES(3,'3','create table checkins','SQL','V3__create_table_checkins.sql',277259538,'SA','2024-04-03 14:05:53.674448',3,'1')
 INSERT INTO "flyway_schema_history" VALUES(4,'4','create-indexes','SQL','V4__create-indexes.sql',553901455,'SA','2024-04-03 14:05:53.682693',1,'1')
 INSERT INTO EVENTS VALUES('28aec39a-3cc4-485b-99e2-d39966b50acd','Evento teste 7','Detalhes teste','evento-teste-7',1)
+INSERT INTO EVENTS VALUES('36e57d7f-ab65-436d-b7d3-7f64ddfddd41','Evento teste 734','Detalhes teste','evento-teste-734',-1)
+INSERT INTO EVENTS VALUES('386abc9e-53a2-4d1c-a43c-4631ec7160ab','Evento teste 72','Detalhes teste','evento-teste-72',0)
 INSERT INTO EVENTS VALUES('3d6b90eb-5fc6-419b-ae1e-ae4107a73ca9','Evento teste 4','Detalhes teste','evento-teste-4',500)
 INSERT INTO EVENTS VALUES('4fa95969-7b17-490b-93c6-f2a757d7fea9','Evento teste 6','Detalhes teste','evento-teste-6',1)
+INSERT INTO EVENTS VALUES('5f988e4a-868d-4de1-9237-524797c106cb','Evento teste 73','Detalhes teste','evento-teste-73',-1)
 INSERT INTO EVENTS VALUES('8714cab8-ff59-4c4c-892e-4fa330df358b','Evento teste 2','Detalhes teste','evento-teste-2',500)
 INSERT INTO EVENTS VALUES('8ff2954b-b7d6-47ac-b497-9c502c3bea7e','Evento teste 3','Detalhes teste','evento-teste-3',500)
 INSERT INTO EVENTS VALUES('e5e6c261-8e5e-4425-ab4f-19b3b4e38db4','Evento teste','Detalhes teste','evento-teste',500)
+INSERT INTO EVENTS VALUES('fced0927-5a70-4d21-9b9f-32360fb82326','Evento teste 7344','Detalhes teste','evento-teste-7344',1)
 INSERT INTO ATTENDEES VALUES('09c1911e-10d1-4706-9406-1555d4dc9198','teste','teste@teste.com','28aec39a-3cc4-485b-99e2-d39966b50acd','2024-04-04 20:25:56.505333')
 INSERT INTO ATTENDEES VALUES('347a22bc-bce4-45a0-98ec-aa644ef97d4f','Novo participante','participante@teste.com','4fa95969-7b17-490b-93c6-f2a757d7fea9','2024-04-04 19:46:49.612239')
 INSERT INTO ATTENDEES VALUES('c0eb4619-2cfb-46c4-a4b3-b910eeab59a9','Novo participante','participante@teste.com','3d6b90eb-5fc6-419b-ae1e-ae4107a73ca9','2024-04-04 19:44:08.739759')
