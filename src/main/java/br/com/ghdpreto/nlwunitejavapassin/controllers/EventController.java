@@ -1,5 +1,9 @@
 package br.com.ghdpreto.nlwunitejavapassin.controllers;
 
+import br.com.ghdpreto.nlwunitejavapassin.config.event.CreateEventSwagger;
+import br.com.ghdpreto.nlwunitejavapassin.config.event.GetAttendeesEventSwagger;
+import br.com.ghdpreto.nlwunitejavapassin.config.event.GetEventSwagger;
+import br.com.ghdpreto.nlwunitejavapassin.config.event.RegisterParticipantEventSwagger;
 import br.com.ghdpreto.nlwunitejavapassin.domain.attendee.Attendee;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeDetailsDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.attendee.AttendeeIdDTO;
@@ -11,6 +15,7 @@ import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventRequestDTO;
 import br.com.ghdpreto.nlwunitejavapassin.dto.event.EventResponseDTO;
 import br.com.ghdpreto.nlwunitejavapassin.services.AttendeeService;
 import br.com.ghdpreto.nlwunitejavapassin.services.EventService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/events")
 @RequiredArgsConstructor
+@Tag(name = "Eventos", description = "Informações de eventos")
 public class EventController {
 
     private final EventService eventService;
@@ -29,6 +35,7 @@ public class EventController {
 
     // criar um evento
     @PostMapping("")
+    @CreateEventSwagger
     public ResponseEntity<EventIdDTO> creatEvent(@Valid @RequestBody EventRequestDTO event,
                                                  UriComponentsBuilder uriComponentsBuilder) {
 
@@ -43,6 +50,7 @@ public class EventController {
 
     // dados do evento
     @GetMapping("/{id}")
+    @GetEventSwagger
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable String id) {
 
         EventDetailDTO event = this.eventService.getEventDetail(id);
@@ -53,6 +61,7 @@ public class EventController {
 
     // buscar participantes do evento
     @GetMapping("/attendees/{id}")
+    @GetAttendeesEventSwagger
     public ResponseEntity<AttendeesListResponseDTO> getEventAttendees(@PathVariable String id) {
         this.eventService.getEventDetail(id);
         List<AttendeeDetailsDTO> attendeesFromEvent = this.attendeeService.getEventsAttende(id);
@@ -64,6 +73,7 @@ public class EventController {
     * registra um participante a um evento
     * */
     @PostMapping("/{eventId}/attendees")
+    @RegisterParticipantEventSwagger
     public ResponseEntity<AttendeeIdDTO> registerParticipant(
             @PathVariable String eventId,
             @Valid @RequestBody AttendeeRequestDTO attendeeRequestDTO,

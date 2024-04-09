@@ -29,7 +29,7 @@ SET FILES NIO TRUE
 SET FILES NIO SIZE 256
 SET FILES LOG TRUE
 SET FILES LOG SIZE 50
-SET FILES CHECK 3472
+SET FILES CHECK 4622
 SET DATABASE COLLATION "SQL_TEXT" PAD SPACE
 CREATE USER SA PASSWORD DIGEST 'd41d8cd98f00b204e9800998ecf8427e'
 ALTER USER SA SET LOCAL TRUE
@@ -63,6 +63,7 @@ INSERT INTO EVENTS VALUES('36e57d7f-ab65-436d-b7d3-7f64ddfddd41','Evento teste 7
 INSERT INTO EVENTS VALUES('386abc9e-53a2-4d1c-a43c-4631ec7160ab','Evento teste 72','Detalhes teste','evento-teste-72',0)
 INSERT INTO EVENTS VALUES('3d6b90eb-5fc6-419b-ae1e-ae4107a73ca9','Evento teste 4','Detalhes teste','evento-teste-4',500)
 INSERT INTO EVENTS VALUES('4fa95969-7b17-490b-93c6-f2a757d7fea9','Evento teste 6','Detalhes teste','evento-teste-6',1)
+INSERT INTO EVENTS VALUES('5e7db621-6d5c-4427-90b7-0ef32b004099','312231123','Detalhes teste','312231123',1)
 INSERT INTO EVENTS VALUES('5f988e4a-868d-4de1-9237-524797c106cb','Evento teste 73','Detalhes teste','evento-teste-73',-1)
 INSERT INTO EVENTS VALUES('8714cab8-ff59-4c4c-892e-4fa330df358b','Evento teste 2','Detalhes teste','evento-teste-2',500)
 INSERT INTO EVENTS VALUES('8ff2954b-b7d6-47ac-b497-9c502c3bea7e','Evento teste 3','Detalhes teste','evento-teste-3',500)
